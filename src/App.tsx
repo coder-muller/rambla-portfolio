@@ -34,7 +34,7 @@ function App() {
                 <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
                     <a href="#" className="block relative z-10 transition-transform hover:scale-105 duration-300">
                         {/* Using the actual logo with mix-blend-multiply to remove the white background */}
-                        <img src="/logo.jpeg" alt="Rambla Viagens" className={`object-contain mix-blend-multiply transition-all duration-500 ${scrolled ? 'h-10 md:h-12' : 'h-14 md:h-16'}`} />
+                        <img src="/rambla-horizontal.png" alt="Rambla Viagens" className={`object-contain transition-all duration-500 ${scrolled ? 'h-10 md:h-12' : 'h-14 md:h-16'}`} />
                     </a>
                     <div className="hidden md:flex space-x-10 font-sans text-xs tracking-[0.15em] uppercase font-medium text-rambla-navy">
                         <a href="#experiencias" className="hover:text-rambla-gold transition-colors">Experiências</a>
@@ -133,9 +133,9 @@ function App() {
             {/* Services Section */}
             <section id="servicos" className="py-24 md:py-32 bg-rambla-navy text-rambla-cream px-6 md:px-12 relative overflow-hidden">
                 {/* Subtle logo watermark in background */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-5 pointer-events-none flex items-center justify-center mix-blend-screen">
-                    <img src="/logo.jpeg" alt="" className="w-[150%] md:w-auto h-auto md:h-[150%] object-contain" />
-                </div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-5 pointer-events-none flex items-center justify-center">
+            <img src="/rambla-horizontal.png" alt="" className="w-[150%] md:w-auto h-auto md:h-[150%] object-contain invert brightness-0" />
+          </div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
@@ -275,7 +275,7 @@ function App() {
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
                     <div className="text-center md:text-left">
                         {/* Small inverted logo in footer */}
-                        <img src="/logo.jpeg" alt="Rambla Viagens" className="h-10 mx-auto md:mx-0 object-contain invert brightness-0 mb-4 opacity-50" />
+                        <img src="/rambla-horizontal.png" alt="Rambla Viagens" className="h-10 mx-auto md:mx-0 object-contain invert brightness-0 mb-4 opacity-50" />
                         <p className="font-sans text-[10px] text-rambla-cream/40 tracking-[0.2em] uppercase">
                             © 2026 Rambla Viagens. Todos os direitos reservados.
                         </p>
