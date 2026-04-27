@@ -156,39 +156,59 @@ function App() {
             </section>
 
             {/* Services Section */}
-            <section id="servicos" className="py-24 md:py-32 bg-rambla-navy text-rambla-cream px-6 md:px-12 relative overflow-hidden">
-                {/* Subtle logo watermark in background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-5 pointer-events-none flex items-center justify-center">
-            <img src="/rambla-horizontal.png" alt="" className="w-[150%] md:w-auto h-auto md:h-[150%] object-contain invert brightness-0" />
-          </div>
-
+            <section id="servicos" className="py-24 md:py-32 bg-rambla-cream text-rambla-navy px-6 md:px-12 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 reveal">
-                        <div>
-                            <p className="font-sans text-rambla-gold uppercase tracking-[0.2em] text-sm mb-4">O que oferecemos</p>
-                            <h2 className="font-serif text-[2.5rem] md:text-6xl leading-tight">Serviços <span className="italic font-light">Exclusivos</span></h2>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8 reveal border-b border-rambla-navy/10 pb-16">
+                        <div className="max-w-2xl">
+                            <p className="font-sans text-rambla-gold uppercase tracking-[0.2em] text-sm mb-6 font-semibold">O que oferecemos</p>
+                            <h2 className="font-serif text-[2.5rem] md:text-5xl lg:text-6xl leading-tight">
+                                Soluções completas, <br/><span className="italic font-light text-rambla-gold">detalhes impecáveis.</span>
+                            </h2>
                         </div>
-                        <p className="font-sans font-light max-w-sm mt-6 md:mt-0 text-rambla-cream/70 text-base">
-                            Soluções completas para que você apenas desfrute o momento sem preocupações.
+                        <p className="font-sans font-light text-rambla-navy/70 max-w-sm text-base md:text-lg leading-relaxed">
+                            Da emissão do bilhete aéreo ao concierge 24h. Cuidamos de todos os aspectos técnicos e burocráticos para sua única obrigação ser desfrutar o destino.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
                         {[
-                            { n: "01", t: "Passagens Aéreas", d: "Emissão de voos nacionais e internacionais com as melhores conexões e tarifas, priorizando seu conforto." },
-                            { n: "02", t: "Hotéis & Resorts", d: "Curadoria rigorosa de hospedagens que combinam com seu estilo, do luxo clássico a boutiques exclusivas." },
-                            { n: "03", t: "Carros e Motorhomes", d: "Veículos premium e motorhomes para rotas panorâmicas e liberdade total no seu destino." },
-                            { n: "04", t: "Tickets e Ingressos", d: "Acesso antecipado a atrações exclusivas, shows e eventos para evitar filas e garantir seu lugar." },
-                            { n: "05", t: "Seguro & Chip", d: "Tranquilidade com coberturas completas de seguro viagem e conectividade de internet ininterrupta no exterior." },
-                            { n: "06", t: "Viagens em Grupo", d: "Organização meticulosa para famílias e grupos, garantindo sincronia perfeita de logística e passeios." },
-                            { n: "07", t: "Roteiros Exclusivos", d: "Itinerários desenhados sob medida para você, equilibrando atrações icônicas e segredos locais bem guardados." },
-                            { n: "08", t: "Suporte Concierge", d: "Atendimento premium durante toda a sua viagem para resolver imprevistos ou desejos de última hora." },
+                            { 
+                                n: "01", 
+                                t: "Voos & Conexões", 
+                                d: "Emissão de passagens aéreas nacionais e internacionais. Buscamos ativamente as melhores rotas, conexões e upgrades, otimizando o seu tempo e conforto no ar." 
+                            },
+                            { 
+                                n: "02", 
+                                t: "Hospedagem & Curadoria", 
+                                d: "Seleção criteriosa de hotéis de luxo, resorts e vilas particulares. Escolhemos propriedades com alma, história e localização estratégica para o seu perfil." 
+                            },
+                            { 
+                                n: "03", 
+                                t: "Mobilidade Premium", 
+                                d: "Locação de veículos de alto padrão. Desde carros esportivos para rotas cênicas, transfers privativos até motorhomes equipados para viagens de imersão." 
+                            },
+                            { 
+                                n: "04", 
+                                t: "Tickets & Atrações", 
+                                d: "Acesso antecipado e sem filas aos principais pontos turísticos, shows, exposições e eventos esportivos concorridos ao redor do mundo." 
+                            },
+                            { 
+                                n: "05", 
+                                t: "Viagens em Grupo", 
+                                d: "Sincronia logística absoluta para famílias e grupos. Organizamos de forma centralizada as estadias, passeios e voos para uma experiência sem fricções." 
+                            },
+                            { 
+                                n: "06", 
+                                t: "Segurança & Suporte", 
+                                d: "Tranquilidade do início ao fim com seguro viagem completo, conectividade global (chips e eSIMs) e um concierge sempre à disposição." 
+                            }
                         ].map((s, i) => (
-                            <div key={i} className="group reveal cursor-pointer relative" style={{ transitionDelay: `${(i % 4) * 100}ms` }}>
-                                <span className="text-rambla-gold/50 font-serif text-3xl mb-4 block group-hover:text-rambla-gold transition-colors">{s.n}.</span>
-                                <h3 className="font-serif text-2xl mb-3 text-rambla-cream group-hover:text-white transition-colors">{s.t}</h3>
-                                <div className="w-10 h-px bg-rambla-gold/30 mb-4 group-hover:w-full group-hover:bg-rambla-gold transition-all duration-500"></div>
-                                <p className="font-sans font-light text-sm text-rambla-cream/60 leading-relaxed group-hover:text-rambla-cream/90 transition-colors">
+                            <div key={i} className="group reveal flex flex-col relative pt-6 border-t border-rambla-navy/10 hover:border-rambla-gold transition-colors duration-500" style={{ transitionDelay: `${i * 100}ms` }}>
+                                <div className="flex items-start justify-between mb-5">
+                                    <h3 className="font-serif text-2xl text-rambla-navy group-hover:text-rambla-gold transition-colors duration-500">{s.t}</h3>
+                                    <span className="font-sans text-[10px] tracking-[0.2em] text-rambla-navy/30 font-semibold group-hover:text-rambla-gold/60 transition-colors">{s.n}</span>
+                                </div>
+                                <p className="font-sans font-light text-base text-rambla-navy/70 leading-relaxed">
                                     {s.d}
                                 </p>
                             </div>
@@ -198,10 +218,12 @@ function App() {
             </section>
 
             {/* Visual Break / Parallax */}
-            <section className="relative h-[50vh] md:h-[60vh] bg-fixed bg-center bg-cover flex items-center justify-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1490237194689-1fc7b165bf2f?q=80&w=2000&auto=format&fit=crop')" }}>
-                <div className="absolute inset-0 bg-rambla-navy/50"></div>
+            <section className="relative h-[50vh] md:h-[60vh] bg-fixed bg-center bg-cover flex items-center justify-center overflow-hidden" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1490237194689-1fc7b165bf2f?q=80&w=2000&auto=format&fit=crop')" }}>
+                <div className="absolute inset-0 bg-rambla-navy/60 mix-blend-multiply"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-rambla-navy/90 via-transparent to-rambla-cream/20"></div>
+
                 <div className="relative z-10 text-center px-6">
-                    <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl text-rambla-cream italic mb-4 drop-shadow-lg">Colecione Horizontes</h2>
+                    <h2 className="font-serif text-4xl md:text-6xl lg:text-8xl text-rambla-cream italic mb-4 drop-shadow-2xl tracking-wide">Colecione Horizontes</h2>
                 </div>
             </section>
 
