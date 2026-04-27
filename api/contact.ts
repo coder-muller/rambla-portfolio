@@ -58,24 +58,24 @@ const buildEmailHtml = (data: ContactFormData) => {
   ];
 
   return `
-    <div style="font-family: Arial, sans-serif; color: #1d324b; line-height: 1.5;">
-      <h1 style="font-size: 20px; margin: 0 0 20px;">Nova solicitação pelo site da Rambla Viagens</h1>
-      <table style="border-collapse: collapse; width: 100%; max-width: 640px;">
-        <tbody>
-          ${rows
-            .map(
-              ([label, value]) => `
-                <tr>
-                  <td style="padding: 10px 12px; border: 1px solid #e7e0d6; font-weight: 700; width: 180px;">${escapeHtml(label)}</td>
-                  <td style="padding: 10px 12px; border: 1px solid #e7e0d6;">${escapeHtml(value)}</td>
-                </tr>
-              `,
-            )
-            .join('')}
-        </tbody>
-      </table>
-      <h2 style="font-size: 16px; margin: 24px 0 8px;">Detalhes da viagem</h2>
-      <p style="white-space: pre-line; margin: 0;">${escapeHtml(data.details)}</p>
+    <div style="font-family: system-ui, -apple-system, sans-serif; color: #111; line-height: 1.6; max-width: 600px;">
+      <p style="margin: 0 0 24px;"><strong>Nova solicitação pelo site da Rambla Viagens</strong></p>
+      
+      ${rows
+        .map(
+          ([label, value]) => `
+            <div style="margin-bottom: 12px;">
+              <span style="color: #666;">${escapeHtml(label)}</span><br>
+              <strong>${escapeHtml(value)}</strong>
+            </div>
+          `,
+        )
+        .join('')}
+      
+      <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #eee;">
+        <span style="color: #666;">Detalhes da viagem</span><br>
+        <p style="white-space: pre-line; margin: 4px 0 0;">${escapeHtml(data.details)}</p>
+      </div>
     </div>
   `;
 };
