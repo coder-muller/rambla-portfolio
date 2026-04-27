@@ -3,6 +3,7 @@ import './index.css';
 
 function App() {
     const [scrolled, setScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -30,26 +31,50 @@ function App() {
             <div className="texture-overlay"></div>
 
             {/* Floating Navigation */}
-            <nav className={`fixed w-full z-50 top-0 transition-all duration-500 border-b border-rambla-navy/5 ${scrolled ? 'bg-rambla-cream/90 backdrop-blur-md py-3 shadow-sm' : 'bg-rambla-cream py-6'}`}>
-                <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <nav className={`fixed w-full z-50 top-0 transition-all duration-500 border-b border-rambla-navy/5 ${scrolled || mobileMenuOpen ? 'bg-rambla-cream/95 backdrop-blur-md py-3 shadow-sm' : 'bg-rambla-cream py-6'}`}>
+                <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center relative">
                     <a href="#" className="block relative z-10 transition-transform hover:scale-105 duration-300">
                         {/* Using the actual logo with mix-blend-multiply to remove the white background */}
                         <img src="/rambla-horizontal.png" alt="Rambla Viagens" className={`object-contain transition-all duration-500 ${scrolled ? 'h-10 md:h-12' : 'h-14 md:h-16'}`} />
                     </a>
+                    
+                    {/* Desktop Menu */}
                     <div className="hidden md:flex space-x-10 font-sans text-xs tracking-[0.15em] uppercase font-medium text-rambla-navy">
                         <a href="#experiencias" className="hover:text-rambla-gold transition-colors">Experiências</a>
                         <a href="#servicos" className="hover:text-rambla-gold transition-colors">Serviços</a>
                         <a href="#contato" className="hover:text-rambla-gold transition-colors">Contato</a>
                     </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <button 
+                        className="md:hidden relative z-10 p-2 w-10 h-10 flex flex-col justify-center items-center focus:outline-none"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle Menu"
+                    >
+                        <div className="relative w-6 h-[14px]">
+                            <span className={`absolute left-0 w-full h-[2px] bg-rambla-navy transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-0'}`}></span>
+                            <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-[2px] bg-rambla-navy transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100 scale-x-100'}`}></span>
+                            <span className={`absolute left-0 w-full h-[2px] bg-rambla-navy transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'top-1/2 -translate-y-1/2 -rotate-45' : 'bottom-0'}`}></span>
+                        </div>
+                    </button>
+                </div>
+
+                {/* Mobile Menu Dropdown */}
+                <div className={`md:hidden absolute top-full left-0 w-full bg-rambla-cream/95 backdrop-blur-md border-b border-rambla-navy/5 shadow-sm transition-all duration-500 overflow-hidden ${mobileMenuOpen ? 'max-h-64 opacity-100 py-6' : 'max-h-0 opacity-0 py-0'}`}>
+                    <div className="flex flex-col space-y-6 px-6 text-center font-sans text-xs tracking-[0.2em] uppercase font-medium text-rambla-navy">
+                        <a href="#experiencias" onClick={() => setMobileMenuOpen(false)} className="hover:text-rambla-gold transition-colors block">Experiências</a>
+                        <a href="#servicos" onClick={() => setMobileMenuOpen(false)} className="hover:text-rambla-gold transition-colors block">Serviços</a>
+                        <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="hover:text-rambla-gold transition-colors block">Contato</a>
+                    </div>
                 </div>
             </nav>
 
             {/* Hero Section - Editorial Layout */}
-            <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 px-6 md:px-12 overflow-hidden bg-rambla-cream">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            <section className="relative pt-36 pb-32 md:pt-48 md:pb-32 px-6 md:px-12 overflow-hidden bg-rambla-cream min-h-[90vh] md:min-h-screen flex items-center">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full mt-8 md:mt-0">
 
                     {/* Text Content */}
-                    <div className="lg:col-span-7 relative z-10 order-2 lg:order-1">
+                    <div className="lg:col-span-7 relative z-10 order-2 lg:order-1 flex flex-col justify-center">
                         <div className="flex items-center gap-4 mb-6 md:mb-8 animate-[fadeInUp_1s_ease-out_forwards]" style={{ opacity: 0 }}>
                             <div className="w-12 h-px bg-rambla-gold"></div>
                             <p className="font-sans text-rambla-gold uppercase tracking-[0.3em] text-xs font-semibold">Agência de Viagens Boutique</p>
@@ -65,12 +90,12 @@ function App() {
                             Desenhamos roteiros sob medida e curadoria de experiências para quem busca viajar com elegância, conforto e propósito.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 md:gap-6 animate-[fadeInUp_1s_ease-out_forwards]" style={{ animationDelay: '600ms', opacity: 0 }}>
-                            <a href="#contato" className="group relative inline-flex items-center justify-center bg-rambla-navy text-rambla-cream px-8 py-4 font-sans uppercase tracking-[0.2em] text-xs overflow-hidden">
+                        <div className="flex flex-col sm:flex-row gap-4 md:gap-6 animate-[fadeInUp_1s_ease-out_forwards] w-full max-w-md sm:max-w-none" style={{ animationDelay: '600ms', opacity: 0 }}>
+                            <a href="#contato" className="group relative inline-flex items-center justify-center bg-rambla-navy text-rambla-cream px-6 sm:px-8 py-4 font-sans uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[10px] sm:text-xs overflow-hidden text-center">
                                 <span className="relative z-10 group-hover:text-rambla-navy transition-colors duration-500">Começar Planejamento</span>
                                 <div className="absolute inset-0 bg-rambla-gold scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                             </a>
-                            <a href="#experiencias" className="inline-flex items-center justify-center px-8 py-4 font-sans uppercase tracking-[0.2em] text-xs text-rambla-navy border border-rambla-navy/20 hover:border-rambla-gold hover:text-rambla-gold transition-colors duration-300">
+                            <a href="#experiencias" className="inline-flex items-center justify-center px-6 sm:px-8 py-4 font-sans uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[10px] sm:text-xs text-rambla-navy border border-rambla-navy/20 hover:border-rambla-gold hover:text-rambla-gold transition-colors duration-300 text-center">
                                 Descobrir Destinos
                             </a>
                         </div>
@@ -96,16 +121,16 @@ function App() {
                 </div>
 
                 {/* Scroll Indicator explicitly pulling down - shows there is more content */}
-                <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 group animate-[fadeInUp_1s_ease-out_forwards]" style={{ animationDelay: '1.2s', opacity: 0 }}>
-                    <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-rambla-navy/40 group-hover:text-rambla-gold transition-colors">Explore mais</span>
-                    <div className="w-px h-12 bg-rambla-navy/10 relative overflow-hidden">
+                <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3 group animate-[fadeInUp_1s_ease-out_forwards] w-full max-w-[200px]" style={{ animationDelay: '1.2s', opacity: 0 }}>
+                    <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-rambla-navy/40 group-hover:text-rambla-gold transition-colors text-center">Explore mais</span>
+                    <div className="w-px h-12 bg-rambla-navy/10 relative overflow-hidden mx-auto">
                         <div className="absolute top-0 left-0 w-full h-1/2 bg-rambla-gold animate-[slideDown_1.5s_ease-in-out_infinite]"></div>
                     </div>
                 </div>
             </section>
 
             {/* Intro Section - Starts right away without huge empty spaces */}
-            <section id="experiencias" className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto bg-rambla-cream relative z-10">
+            <section id="experiencias" className="pt-24 pb-32 md:py-32 px-6 md:px-12 max-w-7xl mx-auto bg-rambla-cream relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
                     <div className="reveal">
                         <h2 className="font-serif text-4xl md:text-6xl text-rambla-navy leading-tight mb-8">
@@ -121,9 +146,9 @@ function App() {
                     <div className="relative reveal h-100 md:h-150 mt-10 md:mt-0">
                         <img src="https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?q=80&w=2072&auto=format&fit=crop"
                             alt="Coastal View"
-                            className="w-full h-full object-cover rounded-tl-[150px] rounded-br-[150px] shadow-xl" />
-                        <div className="absolute -bottom-8 -left-4 md:-left-12 bg-rambla-navy text-rambla-cream p-8 md:p-10 max-w-70 shadow-2xl">
-                            <p className="font-serif italic text-2xl mb-2 leading-snug">"Descobrir é a verdadeira viagem."</p>
+                            className="w-full h-full object-cover rounded-tl-[100px] md:rounded-tl-[150px] rounded-br-[100px] md:rounded-br-[150px] shadow-xl" />
+                        <div className="absolute -bottom-12 sm:-bottom-8 left-0 sm:-left-4 md:-left-12 bg-rambla-navy text-rambla-cream p-6 md:p-10 w-[90%] sm:max-w-70 shadow-2xl z-10">
+                            <p className="font-serif italic text-xl md:text-2xl mb-2 leading-snug">"Descobrir é a verdadeira viagem."</p>
                             <div className="w-8 h-px bg-rambla-gold mt-4"></div>
                         </div>
                     </div>
@@ -138,12 +163,12 @@ function App() {
           </div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 reveal">
                         <div>
                             <p className="font-sans text-rambla-gold uppercase tracking-[0.2em] text-sm mb-4">O que oferecemos</p>
-                            <h2 className="font-serif text-4xl md:text-6xl">Serviços <span className="italic font-light">Exclusivos</span></h2>
+                            <h2 className="font-serif text-[2.5rem] md:text-6xl leading-tight">Serviços <span className="italic font-light">Exclusivos</span></h2>
                         </div>
-                        <p className="font-sans font-light max-w-sm mt-6 md:mt-0 text-rambla-cream/70">
+                        <p className="font-sans font-light max-w-sm mt-6 md:mt-0 text-rambla-cream/70 text-base">
                             Soluções completas para que você apenas desfrute o momento sem preocupações.
                         </p>
                     </div>
@@ -217,18 +242,18 @@ function App() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="relative group">
                                         <label className="block font-sans text-[10px] tracking-[0.2em] uppercase text-rambla-gold mb-2">Nome Completo</label>
-                                        <input type="text" required className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent" />
+                                        <input type="text" required placeholder="Como prefere ser chamado?" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent placeholder-rambla-navy/30" />
                                     </div>
                                     <div className="relative group">
                                         <label className="block font-sans text-[10px] tracking-[0.2em] uppercase text-rambla-gold mb-2">E-mail</label>
-                                        <input type="email" required className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent" />
+                                        <input type="email" required placeholder="seu.melhor@email.com" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent placeholder-rambla-navy/30" />
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="relative group">
                                         <label className="block font-sans text-[10px] tracking-[0.2em] uppercase text-rambla-gold mb-2">Telefone / WhatsApp</label>
-                                        <input type="tel" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent" />
+                                        <input type="tel" placeholder="(00) 00000-0000" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent placeholder-rambla-navy/30" />
                                     </div>
                                     <div className="relative group">
                                         <label className="block font-sans text-[10px] tracking-[0.2em] uppercase text-rambla-gold mb-2">Serviço Desejado</label>
@@ -251,7 +276,7 @@ function App() {
                                     </div>
                                     <div className="relative group">
                                         <label className="block font-sans text-[10px] tracking-[0.2em] uppercase text-rambla-gold mb-2">Data Prevista</label>
-                                        <input type="month" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent text-rambla-navy/80 uppercase" />
+                                        <input type="month" className="w-full text-base pb-3 border-b border-rambla-navy/20 focus:border-rambla-gold transition-colors bg-transparent text-rambla-navy/80 uppercase placeholder-rambla-navy/30" />
                                     </div>
                                 </div>
 
