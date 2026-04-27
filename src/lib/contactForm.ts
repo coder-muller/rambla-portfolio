@@ -17,15 +17,15 @@ const optionalText = z
 
 export const contactFormSchema = z.object({
   name: z
-    .string()
+    .string({ error: 'Informe seu nome completo.' })
     .trim()
     .min(2, 'Informe seu nome completo.'),
   email: z
-    .string()
+    .string({ error: 'Informe um e-mail válido.' })
     .trim()
     .email('Informe um e-mail válido.'),
   phone: z
-    .string()
+    .string({ error: 'Informe um telefone ou WhatsApp válido.' })
     .trim()
     .regex(/^\+?[0-9\s().-]{10,20}$/, 'Informe um telefone ou WhatsApp válido.'),
   service: z.enum(Object.keys(serviceLabels) as [keyof typeof serviceLabels, ...Array<keyof typeof serviceLabels>], {
@@ -34,7 +34,7 @@ export const contactFormSchema = z.object({
   destination: optionalText,
   travelDate: optionalText,
   details: z
-    .string()
+    .string({ error: 'Conte um pouco mais sobre a viagem.' })
     .trim()
     .min(10, 'Conte um pouco mais sobre a viagem.'),
   website: optionalText,

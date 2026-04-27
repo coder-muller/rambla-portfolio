@@ -1,6 +1,10 @@
 import { Resend } from 'resend';
-import { contactFormSchema, serviceLabels } from '../src/lib/contactForm';
-import type { ContactFormData } from '../src/lib/contactForm';
+import { contactFormSchema, serviceLabels } from '../src/lib/contactForm.js';
+import type { ContactFormData } from '../src/lib/contactForm.js';
+
+declare const process: {
+  env: Record<string, string | undefined>;
+};
 
 const contactToEmail = process.env.CONTACT_TO_EMAIL ?? 'contato@ramblaviagens.com.br';
 const resendFromEmail = process.env.RESEND_FROM_EMAIL ?? 'Rambla Viagens <contato@ramblaviagens.com.br>';
