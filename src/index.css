@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-rambla-navy: #1d324b;
+  --color-rambla-gold: #b1803c;
+  --color-rambla-cream: #f9f9f8;
+  --color-rambla-dark: #0f1a26;
+  
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Montserrat", sans-serif;
+  
+  --animate-slow-pan: slowPan 30s linear infinite alternate;
+  
+  @keyframes slowPan {
+    0% { transform: scale(1.05) translate(0, 0); }
+    100% { transform: scale(1.1) translate(-2%, -2%); }
+  }
+
+  @keyframes slideDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+  }
+
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .gold-accent-line {
+    position: relative;
+  }
+  .gold-accent-line::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 1px;
+    background-color: var(--color-rambla-gold);
+    transition: width 0.3s ease;
+  }
+  .group:hover .gold-accent-line::after {
+    width: 100%;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base Styles */
+body {
+  background-color: var(--color-rambla-cream);
+  color: var(--color-rambla-navy);
+}
+
+.texture-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgnI25vaXNlRmlsdGVyJykiLz48L3N2Zz4=');
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 50;
+}
+
+input, textarea, select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(29, 50, 75, 0.3);
+  border-radius: 0;
+  padding: 10px 0;
+  font-family: var(--font-sans);
+  color: var(--color-rambla-navy);
+  transition: all 0.3s ease;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-bottom-color: var(--color-rambla-gold);
+  box-shadow: none;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(29, 50, 75, 0.5);
+  font-weight: 300;
+}
