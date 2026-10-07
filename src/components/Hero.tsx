@@ -1,56 +1,271 @@
-export default function Hero() {
+import { useEffect, useId, useRef } from 'react';
+import { gsap, useGSAP, FINE_POINTER, MOTION_OK } from '../lib/gsap';
+import { useIntro } from '../lib/intro';
+import { images } from '../lib/content';
+import { unsplash } from '../lib/media';
+import Img from './ui/Img';
+import Magnetic from './ui/Magnetic';
+import RollText from './ui/RollText';
+import Arrow from './ui/Arrow';
+import PalmGlyph from './ui/PalmGlyph';
+
+const TITLE_LINES = ['O mundo em', 'sua forma mais'];
+
+// Arcos concêntricos do fundo, ecoando a janela do logo.
+const ARCHES = [170, 265, 360, 455, 550].map((half) => {
+    const sides = half * 0.95;
+    return `M${550 - half} 1100V${1100 - sides}A${half} ${half} 0 0 1 ${550 + half} ${1100 - sides}V1100`;
+});
+
+function RotatingBadge() {
+    const pathId = `badge-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
     return (
-        <section className="relative pt-36 pb-32 md:pt-48 md:pb-32 px-6 md:px-12 overflow-hidden bg-rambla-cream min-h-[90vh] md:min-h-screen flex items-center">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full mt-8 md:mt-0">
-                <div className="lg:col-span-7 relative z-10 order-2 lg:order-1 flex flex-col justify-center">
-                    <div className="flex items-center gap-4 mb-6 md:mb-8 animate-[fadeInUp_1s_ease-out_forwards]" style={{ opacity: 0 }}>
-                        <div className="w-12 h-px bg-rambla-gold"></div>
-                        <p className="font-sans text-rambla-gold uppercase tracking-[0.3em] text-xs font-semibold">Agência de Viagens</p>
+        <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-rambla-cream/85 shadow-[0_20px_50px_-25px_rgba(29,50,75,0.45)] backdrop-blur-md md:h-32 md:w-32">
+            <svg viewBox="0 0 120 120" className="absolute inset-0 h-full w-full animate-spin-slow" aria-hidden="true">
+                <defs>
+                    <path id={pathId} d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1-90 0" />
+                </defs>
+                <text className="fill-rambla-navy font-sans uppercase" style={{ fontSize: 7.6, letterSpacing: '0.3em' }}>
+                    <textPath href={`#${pathId}`} textLength="282" lengthAdjust="spacing">
+                        Roteiros sob medida · Rambla Viagens ·
+                    </textPath>
+                </text>
+            </svg>
+            <PalmGlyph className="h-9 w-9" />
+        </div>
+    );
+}
+
+export default function Hero() {
+    const { played, revealed } = useIntro();
+    const root = useRef<HTMLElement>(null);
+    const entrance = useRef<gsap.core.Timeline | null>(null);
+    const revealedRef = useRef(revealed);
+
+    useGSAP(
+        () => {
+            const section = root.current;
+            if (!section) return;
+            const q = gsap.utils.selector(section);
+            const mm = gsap.matchMedia();
+
+            mm.add(MOTION_OK, () => {
+                if (played) gsap.set(q('[data-hero-frame]'), { autoAlpha: 0 });
+
+                const tl = gsap.timeline({ paused: true, defaults: { duration: 1.6 } });
+                tl.from(q('[data-hero-line]'), { yPercent: 118, rotate: 3, transformOrigin: '0% 100%', stagger: 0.11 }, 0)
+                    .from(q('[data-hero-rule]'), { scaleX: 0, transformOrigin: 'left', duration: 1.4, ease: 'expo.inOut' }, 0.1)
+                    .from(q('[data-hero-eyebrow]'), { opacity: 0, x: -16, duration: 1.2 }, 0.4)
+                    .from(q('[data-hero-fade]'), { opacity: 0, y: 28, stagger: 0.12, duration: 1.4 }, 0.55)
+                    .fromTo(
+                        q('[data-hero-arches] path'),
+                        { strokeDashoffset: 1 },
+                        { strokeDashoffset: 0, duration: 2.6, stagger: 0.12, ease: 'power3.inOut' },
+                        0,
+                    )
+                    .from(q('[data-hero-outline]'), { opacity: 0, scale: 0.92, duration: 1.8 }, 0.5)
+                    .from(
+                        q('[data-hero-detail]'),
+                        { clipPath: 'inset(100% 0% 0% 0% round 999px 999px 0px 0px)', duration: 1.6, ease: 'expo.inOut' },
+                        0.7,
+                    )
+                    .from(q('[data-hero-card]'), { opacity: 0, y: 40, duration: 1.4 }, 1)
+                    .from(q('[data-hero-badge]'), { scale: 0, rotate: -120, duration: 1.6, ease: 'back.out(1.4)' }, 0.95)
+                    .from(q('[data-hero-cue]'), { opacity: 0, y: 20, duration: 1.2 }, 1.2);
+
+                if (!played) {
+                    tl.from(
+                        q('[data-hero-frame]'),
+                        { clipPath: 'inset(100% 0% 0% 0% round 999px 999px 0px 0px)', duration: 1.8, ease: 'expo.inOut' },
+                        0.15,
+                    ).from(q('[data-hero-img]'), { scale: 1.5, duration: 2.4 }, 0.15);
+                }
+
+                entrance.current = tl;
+                if (revealedRef.current) tl.play();
+
+                // Parallax de scroll: cada camada viaja numa velocidade.
+                const scroll = { trigger: section, start: 'top top', end: 'bottom top', scrub: true };
+                gsap.to(q('[data-hero-copy]'), { yPercent: -22, opacity: 0.15, ease: 'none', scrollTrigger: scroll });
+                gsap.to(q('[data-hero-visual]'), { yPercent: -10, ease: 'none', scrollTrigger: scroll });
+                gsap.fromTo(q('[data-hero-img]'), { yPercent: 0 }, { yPercent: 14, ease: 'none', scrollTrigger: scroll });
+                gsap.to(q('[data-hero-detail-wrap]'), { yPercent: -60, ease: 'none', scrollTrigger: scroll });
+                gsap.to(q('[data-hero-badge-wrap]'), { rotate: 200, yPercent: -40, ease: 'none', scrollTrigger: scroll });
+                gsap.to(q('[data-hero-arches]'), { yPercent: 18, scale: 1.08, ease: 'none', scrollTrigger: scroll });
+            });
+
+            // Parallax de mouse em camadas (desktop).
+            mm.add(`${FINE_POINTER} and ${MOTION_OK}`, () => {
+                const layers = q('[data-depth]').map((layer) => ({
+                    depth: Number(layer.getAttribute('data-depth')),
+                    x: gsap.quickTo(layer, 'x', { duration: 1.4, ease: 'power3' }),
+                    y: gsap.quickTo(layer, 'y', { duration: 1.4, ease: 'power3' }),
+                }));
+
+                const handleMove = (event: PointerEvent) => {
+                    const nx = event.clientX / window.innerWidth - 0.5;
+                    const ny = event.clientY / window.innerHeight - 0.5;
+                    layers.forEach((layer) => {
+                        layer.x(nx * 36 * layer.depth);
+                        layer.y(ny * 28 * layer.depth);
+                    });
+                };
+
+                section.addEventListener('pointermove', handleMove);
+                return () => section.removeEventListener('pointermove', handleMove);
+            });
+
+            return () => mm.revert();
+        },
+        { scope: root },
+    );
+
+    useEffect(() => {
+        revealedRef.current = revealed;
+        if (revealed) entrance.current?.play();
+    }, [revealed]);
+
+    return (
+        <section
+            ref={root}
+            id="inicio"
+            className="relative flex min-h-svh items-center overflow-hidden px-6 pb-20 pt-28 md:px-12 md:pb-28 md:pt-36 lg:pb-24"
+        >
+            {/* Fundo: arcos concêntricos + brilho dourado */}
+            <svg
+                data-hero-arches
+                viewBox="0 0 1100 1100"
+                preserveAspectRatio="xMidYMax meet"
+                className="pointer-events-none absolute -right-[30%] bottom-0 h-[92%] w-auto opacity-70 sm:-right-[18%] lg:right-[-6%] lg:h-[105%]"
+                aria-hidden="true"
+            >
+                {ARCHES.map((d) => (
+                    <path key={d} d={d} fill="none" stroke="currentColor" strokeWidth="1" pathLength={1} strokeDasharray="1" className="text-rambla-navy/10" />
+                ))}
+            </svg>
+            <div className="pointer-events-none absolute right-[12%] top-[28%] h-72 w-72 rounded-full bg-rambla-gold/15 blur-[90px]" aria-hidden="true" />
+
+            <div className="relative mx-auto grid w-full max-w-360 grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+                <div data-hero-copy className="relative z-10 order-2 lg:order-1 lg:col-span-7">
+                    <div className="mb-8 flex items-center gap-3 md:mb-10 md:gap-4">
+                        <span data-hero-rule className="h-px w-8 bg-rambla-gold md:w-12" />
+                        <p data-hero-eyebrow className="eyebrow whitespace-nowrap tracking-[0.22em] text-rambla-gold md:tracking-[0.32em]">
+                            Agência de viagens sob medida
+                        </p>
                     </div>
 
-                    <h1 className="font-serif text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.1] md:leading-[0.95] text-rambla-navy mb-8 animate-[fadeInUp_1s_ease-out_forwards]" style={{ animationDelay: '200ms', opacity: 0 }}>
-                        O mundo em <br className="hidden md:block" />
-                        sua forma mais <br className="hidden md:block" />
-                        <span className="italic text-rambla-gold">exclusiva.</span>
+                    <h1
+                        aria-label="O mundo em sua forma mais exclusiva."
+                        className="font-serif text-[clamp(3.2rem,7.4vw,8.4rem)] font-normal leading-[0.94] tracking-[-0.015em] text-rambla-navy"
+                    >
+                        {TITLE_LINES.map((line) => (
+                            <span key={line} aria-hidden="true" className="line-mask">
+                                <span data-hero-line className="block">
+                                    {line}
+                                </span>
+                            </span>
+                        ))}
+                        <span aria-hidden="true" className="line-mask">
+                            <span data-hero-line className="flex items-center gap-[0.25em]">
+                                <em className="font-light text-rambla-gold">exclusiva.</em>
+                                <span className="hidden h-px flex-1 translate-y-[0.1em] bg-rambla-navy/15 md:block" />
+                            </span>
+                        </span>
                     </h1>
 
-                    <p className="font-sans text-rambla-navy/70 text-lg font-light max-w-lg mb-10 md:mb-12 animate-[fadeInUp_1s_ease-out_forwards]" style={{ animationDelay: '400ms', opacity: 0 }}>
+                    <p data-hero-fade className="mt-8 max-w-md text-base font-light leading-relaxed text-rambla-navy/70 md:mt-10 md:text-lg">
                         Desenhamos roteiros sob medida e curadoria de experiências para quem busca viajar com elegância, conforto e propósito.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4 md:gap-6 animate-[fadeInUp_1s_ease-out_forwards] w-full max-w-md sm:max-w-none" style={{ animationDelay: '600ms', opacity: 0 }}>
-                        <a href="#contato" className="group relative inline-flex items-center justify-center bg-rambla-navy text-rambla-cream px-6 sm:px-8 py-4 font-sans uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[10px] sm:text-xs overflow-hidden text-center">
-                            <span className="relative z-10 group-hover:text-rambla-navy transition-colors duration-500">Começar Planejamento</span>
-                            <div className="absolute inset-0 bg-rambla-gold scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
-                        </a>
-                        <a href="#experiencias" className="inline-flex items-center justify-center px-6 sm:px-8 py-4 font-sans uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[10px] sm:text-xs text-rambla-navy border border-rambla-navy/20 hover:border-rambla-gold hover:text-rambla-gold transition-colors duration-300 text-center">
-                            Descobrir Destinos
+                    <div data-hero-fade className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-center md:mt-12 md:gap-8">
+                        <Magnetic strength={0.22}>
+                            <a
+                                href="#contato"
+                                className="group/roll group/btn relative inline-flex w-full items-center justify-between gap-6 overflow-hidden rounded-full bg-rambla-navy py-2 pl-8 pr-2 text-rambla-cream sm:w-auto"
+                            >
+                                <span className="absolute inset-0 translate-y-full rounded-full bg-rambla-gold transition-transform duration-700 ease-out-expo group-hover/btn:translate-y-0" />
+                                <span className="eyebrow relative text-[10px]">
+                                    <RollText>Começar planejamento</RollText>
+                                </span>
+                                <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-rambla-cream/10 transition-colors duration-500 group-hover/btn:bg-rambla-navy">
+                                    <Arrow className="h-3.5 w-3.5 transition-transform duration-500 group-hover/btn:rotate-45" />
+                                </span>
+                            </a>
+                        </Magnetic>
+                        <a href="#destinos" className="group/roll eyebrow inline-flex items-center gap-4 text-[10px] text-rambla-navy">
+                            <span className="relative flex h-11 w-11 items-center justify-center rounded-full border border-rambla-navy/20 transition-colors duration-500 group-hover/roll:border-rambla-gold group-hover/roll:text-rambla-gold">
+                                <Arrow className="h-3 w-3 rotate-135" />
+                            </span>
+                            <RollText>Descobrir destinos</RollText>
                         </a>
                     </div>
                 </div>
 
-                <div className="lg:col-span-5 relative order-1 lg:order-2 animate-[fadeInUp_1.5s_ease-out_forwards]" style={{ animationDelay: '300ms', opacity: 0 }}>
-                    <div className="relative w-full max-w-[320px] md:max-w-100 mx-auto lg:ml-auto lg:mr-0 aspect-3/4 rounded-t-full overflow-hidden shadow-2xl border-4 border-white">
-                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=1500&auto=format&fit=crop"
-                            alt="Arquitetura de Destino Exclusivo"
-                            className="w-full h-full object-cover animate-slow-pan" />
-                        <div className="absolute inset-0 border-t-20px border-rambla-cream/20 rounded-t-full mix-blend-overlay"></div>
-                    </div>
+                <div data-hero-visual className="relative order-1 lg:order-2 lg:col-span-5">
+                    <div className="relative mx-auto w-[min(58vw,250px)] sm:w-[320px] lg:ml-auto lg:mr-4 lg:w-full lg:max-w-[440px]">
+                        <div data-depth="0.35" className="absolute inset-0">
+                            <div
+                                data-hero-outline
+                                className="h-full w-full translate-x-5 -translate-y-5 rounded-t-full border border-rambla-gold/45 md:translate-x-7 md:-translate-y-7"
+                            />
+                        </div>
 
-                    <div className="absolute top-1/3 -left-8 md:-left-16 bg-white/90 backdrop-blur-md px-6 py-5 shadow-[0_20px_40px_-15px_rgba(29,50,75,0.1)] rounded-sm hidden sm:block animate-[fadeInUp_1s_ease-out_forwards]" style={{ animationDelay: '1s', opacity: 0 }}>
-                        <p className="font-serif italic text-2xl text-rambla-navy leading-none mb-2">Personalizado</p>
-                        <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-rambla-gold">Do seu jeito</p>
-                    </div>
+                        <div data-depth="0.75" className="relative">
+                            <div
+                                data-hero-frame
+                                data-cursor="Paris"
+                                className="relative aspect-3/4 overflow-hidden rounded-t-full bg-rambla-sand shadow-[0_50px_90px_-40px_rgba(29,50,75,0.55)]"
+                            >
+                                <Img
+                                    data-hero-img
+                                    src={unsplash(images.hero, 1400)}
+                                    alt="Rua parisiense com a Torre Eiffel ao fundo"
+                                    fetchPriority="high"
+                                    className="h-full w-full scale-[1.15] object-cover"
+                                />
+                                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-rambla-navy/35 via-transparent to-transparent" />
+                            </div>
+                        </div>
 
-                    <div className="absolute -bottom-6 right-4 md:-right-6 w-24 h-24 bg-rambla-gold/10 rounded-full blur-2xl"></div>
+                        <div data-depth="1.5" className="absolute -bottom-10 -left-8 w-[38%] sm:-left-14 lg:-left-20">
+                            <div data-hero-detail-wrap>
+                                <div
+                                    data-hero-detail
+                                    className="aspect-3/4 overflow-hidden rounded-t-full border-[5px] border-rambla-cream shadow-[0_30px_60px_-25px_rgba(29,50,75,0.5)]"
+                                >
+                                    <Img src={unsplash(images.heroDetail, 640)} alt="Bangalôs sobre o mar nas Maldivas" className="h-full w-full scale-110 object-cover" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-depth="1.1" className="absolute -left-6 top-[18%] hidden md:block lg:-left-24">
+                            <div data-hero-card className="bg-white/80 px-6 py-5 shadow-[0_25px_50px_-20px_rgba(29,50,75,0.25)] backdrop-blur-md">
+                                <p className="mb-2 font-serif text-2xl italic leading-none text-rambla-navy">Personalizado</p>
+                                <p className="eyebrow text-[9px] text-rambla-gold">Do seu jeito</p>
+                            </div>
+                        </div>
+
+                        <div data-depth="0.9" className="absolute -right-6 -top-8 md:-right-12">
+                            <div data-hero-badge-wrap>
+                                <div data-hero-badge>
+                                    <RotatingBadge />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3 group animate-[fadeInUp_1s_ease-out_forwards] w-full max-w-50" style={{ animationDelay: '1.2s', opacity: 0 }}>
-                <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-rambla-navy/40 group-hover:text-rambla-gold transition-colors text-center">Explore mais</span>
-                <div className="w-px h-12 bg-rambla-navy/10 relative overflow-hidden mx-auto">
-                    <div className="absolute top-0 left-0 w-full h-1/2 bg-rambla-gold animate-[slideDown_1.5s_ease-in-out_infinite]"></div>
-                </div>
+            <div data-hero-cue className="absolute bottom-8 left-6 right-6 hidden items-end justify-between md:left-12 md:right-12 md:flex">
+                <a href="#experiencias" className="group/roll flex items-center gap-4">
+                    <span className="relative block h-12 w-px overflow-hidden bg-rambla-navy/10">
+                        <span className="absolute inset-0 block animate-scroll-cue bg-rambla-gold" />
+                    </span>
+                    <span className="eyebrow text-[9px] text-rambla-navy/50 transition-colors group-hover/roll:text-rambla-gold">
+                        <RollText>Role para explorar</RollText>
+                    </span>
+                </a>
+                <p className="eyebrow text-[9px] text-rambla-navy/40">Viagens nacionais & internacionais</p>
             </div>
         </section>
     );

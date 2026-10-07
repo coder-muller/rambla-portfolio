@@ -1,45 +1,54 @@
-import { useEffect } from 'react';
-import './index.css';
+import { useEffect, useMemo, useState } from 'react';
+import { ScrollTrigger } from './lib/gsap';
+import { initSmoothScroll, jumpToHash } from './lib/scroll';
+import { IntroContext, shouldPlayIntro } from './lib/intro';
 
+import Preloader from './components/Preloader';
+import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import Intro from './components/Intro';
+import Marquee from './components/Marquee';
+import Manifesto from './components/Manifesto';
+import Destinations from './components/Destinations';
 import Services from './components/Services';
-import Parallax from './components/Parallax';
+import Process from './components/Process';
+import Horizons from './components/Horizons';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
+    const [played] = useState(shouldPlayIntro);
+    const [revealed, setRevealed] = useState(!played);
+    const [introDone, setIntroDone] = useState(!played);
+    const intro = useMemo(() => ({ played, revealed }), [played, revealed]);
+
     useEffect(() => {
-        const handleScroll = () => {
-            const reveals = document.querySelectorAll(".reveal");
-            for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight;
-                const elementTop = reveals[i].getBoundingClientRect().top;
-                const elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        handleScroll(); // init
-
-        return () => window.removeEventListener("scroll", handleScroll);
+        const destroy = initSmoothScroll();
+        document.fonts?.ready.then(() => {
+            ScrollTrigger.refresh();
+            jumpToHash();
+        });
+        return destroy;
     }, []);
 
     return (
-        <>
-            <div className="texture-overlay"></div>
+        <IntroContext.Provider value={intro}>
+            {!introDone && <Preloader onReveal={() => setRevealed(true)} onComplete={() => setIntroDone(true)} />}
+            <Cursor />
+            <div className="grain" aria-hidden="true" />
             <Navbar />
-            <Hero />
-            <Intro />
-            <Services />
-            <Parallax />
-            <Contact />
+            <main>
+                <Hero />
+                <Marquee />
+                <Manifesto />
+                <Destinations />
+                <Services />
+                <Process />
+                <Horizons />
+                <Contact />
+            </main>
             <Footer />
-        </>
+        </IntroContext.Provider>
     );
 }
 
