@@ -1,13 +1,14 @@
 import { useEffect, useId, useRef } from 'react';
 import { gsap, useGSAP, FINE_POINTER, MOTION_OK } from '../lib/gsap';
 import { useIntro } from '../lib/intro';
-import { images } from '../lib/content';
+import { heroPlace, images } from '../lib/content';
 import { unsplash } from '../lib/media';
 import Img from './ui/Img';
 import Magnetic from './ui/Magnetic';
 import RollText from './ui/RollText';
 import Arrow from './ui/Arrow';
 import PalmGlyph from './ui/PalmGlyph';
+import Stamp from './ui/Stamp';
 
 const TITLE_LINES = ['O mundo em', 'sua forma mais'];
 
@@ -64,11 +65,14 @@ export default function Hero() {
                         0,
                     )
                     .from(q('[data-hero-outline]'), { opacity: 0, scale: 0.92, duration: 1.8 }, 0.5)
+                    // O selo cai girando sobre a moldura e o carimbo "bate" com um pequeno impacto.
+                    .from(q('[data-hero-stamp]'), { y: -80, rotate: -26, scale: 1.3, opacity: 0, duration: 1.2, ease: 'back.out(1.3)' }, 0.75)
                     .from(
-                        q('[data-hero-detail]'),
-                        { clipPath: 'inset(100% 0% 0% 0% round 999px 999px 0px 0px)', duration: 1.6, ease: 'expo.inOut' },
-                        0.7,
+                        q('[data-stamp-postmark]'),
+                        { scale: 1.9, opacity: 0, transformOrigin: '22% 50%', duration: 0.36, ease: 'power4.in' },
+                        1.6,
                     )
+                    .to(q('[data-hero-stamp]'), { scale: 0.94, duration: 0.09, yoyo: true, repeat: 1, ease: 'power2.out' }, 1.96)
                     .from(q('[data-hero-card]'), { opacity: 0, y: 40, duration: 1.4 }, 1)
                     .from(q('[data-hero-badge]'), { scale: 0, rotate: -120, duration: 1.6, ease: 'back.out(1.4)' }, 0.95)
                     .from(q('[data-hero-cue]'), { opacity: 0, y: 20, duration: 1.2 }, 1.2);
@@ -219,7 +223,7 @@ export default function Hero() {
                                 <Img
                                     data-hero-img
                                     src={unsplash(images.hero, 1400)}
-                                    alt="Rua parisiense com a Torre Eiffel ao fundo"
+                                    alt="Ponte Alexandre III, em Paris, ao entardecer"
                                     fetchPriority="high"
                                     className="h-full w-full scale-[1.15] object-cover"
                                 />
@@ -227,13 +231,12 @@ export default function Hero() {
                             </div>
                         </div>
 
-                        <div data-depth="1.5" className="absolute -bottom-10 -left-8 w-[38%] sm:-left-14 lg:-left-20">
+                        <div data-depth="1.5" className="absolute -bottom-4 -left-6 w-[40%] sm:-left-12 lg:-bottom-10 lg:-left-16 lg:w-[36%]">
                             <div data-hero-detail-wrap>
-                                <div
-                                    data-hero-detail
-                                    className="aspect-3/4 overflow-hidden rounded-t-full border-[5px] border-rambla-cream shadow-[0_30px_60px_-25px_rgba(29,50,75,0.5)]"
-                                >
-                                    <Img src={unsplash(images.heroDetail, 640)} alt="Bangalôs sobre o mar nas Maldivas" className="h-full w-full scale-110 object-cover" />
+                                <div className="-rotate-6 transition-transform duration-700 ease-out-expo hover:-translate-y-1.5 hover:-rotate-2">
+                                    <div data-hero-stamp>
+                                        <Stamp city={heroPlace.city} country={heroPlace.country} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

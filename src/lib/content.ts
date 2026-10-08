@@ -17,10 +17,12 @@ export const contact = {
 
 export const images = {
     hero: '1499856871958-5b9627545d1a',
-    heroDetail: '1514282401047-d79a71a590e8',
     manifesto: '1515238152791-8216bfdf89a7',
     horizons: '1490237194689-1fc7b165bf2f',
 } as const;
+
+// Lugar da foto principal do Hero, usado no selo.
+export const heroPlace = { city: 'Paris', country: 'França' } as const;
 
 export const marqueeDestinations = [
     'Paris',
