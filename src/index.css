@@ -103,6 +103,21 @@
       linear-gradient(160deg, var(--color-rambla-navy), var(--color-rambla-dark));
   }
 
+  /* Selo postal: os furos do picote ficam centrados nas bordas; os internos somem sob a face. */
+  .stamp-paper {
+    --hole: 3.6px;
+    --pitch: 12px;
+    padding: 8px;
+    background:
+      radial-gradient(circle at center, transparent var(--hole), var(--color-rambla-cream) calc(var(--hole) + 0.6px))
+      calc(var(--pitch) / -2) calc(var(--pitch) / -2) / var(--pitch) var(--pitch) round;
+  }
+
+  .stamp-face {
+    outline: 1px solid rgb(216 183 130 / 0.45);
+    outline-offset: -5px;
+  }
+
   /* Campos do formulário de contato (fundo escuro). */
   .field {
     position: relative;
